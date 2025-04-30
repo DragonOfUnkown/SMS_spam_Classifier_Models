@@ -1,3 +1,5 @@
+## 🗒️ Model Quick Facts
+
 | Stage | What we do | Key details |
 |-------|------------|-------------|
 | **1. Dataset** | Fetch SMS Spam Collection from UCI. | 5 574 labeled messages (`ham`/`spam`) – downloaded ZIP, extracted TSV. |
