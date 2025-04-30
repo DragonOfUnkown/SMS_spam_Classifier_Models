@@ -1,0 +1,12 @@
+| Stage | What we do | Key details |
+|-------|------------|-------------|
+| **1. Dataset** | Fetch SMS Spam Collection from UCI. | 5 574 labeled messages (`ham`/`spam`) – downloaded ZIP, extracted TSV. |
+| **2. Cleaning & Normalisation** | Uniform text for modelling. | - Lowercase every message.<br>- Regex keep **letters, space, `$`, `!`**.<br>- Remove duplicates. |
+| **3. Token pipeline (NLTK)** | Turn raw text into lean tokens. | - `word_tokenize` → word list.<br>- Drop English stop-words.<br>- Porter stem each word.<br>- Re-join to single string (needed for vectoriser). |
+| **4. Feature extraction** | Bag-of-Words counts. | `CountVectorizer(min_df=1, max_df=0.9, ngram_range=(1, 2))` → unigrams + bigrams, rare terms kept, ultra-common terms ( >90 %) dropped. |
+| **5. Model** | Multinomial Naive Bayes. | Fits word–count vectors; assumes word independence: ![formula]  |
+| **6. Training wrapper** | One reusable pipeline. | ```python\nPipeline([\n  ('vectorizer', vectorizer),\n  ('classifier', MultinomialNB())\n])``` |
+| **7. Hyper-parameter search** | Find best smoothing (`alpha`). | `GridSearchCV`, 5-fold CV, F1 score ; `alpha ∈ {0.01…1.0}`. |
+| **8. Validation result** | High recall, few false alarms. | Confusion matrix (val set): **TN = 889, FP = 5, FN = 0, TP = 140**. |
+| **9. Prediction workflow** | Pre-process ➜ vectorise ➜ predict. | Returns **class** + `predict_proba` (spam / ham confidence). |
+| **10. Persistence** | Ready for production. | `joblib.dump(best_model, 'spam_detection_model.joblib')` – reload instantly with `joblib.load`. |
